@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+#ML Files
+ml_models/
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# Django specific
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/  # если ты используешь collectstatic
+
+# VSCode/PyCharm settings
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Migrations (по желанию)
+# Если не хочешь игнорировать — удали следующую строку
+*/migrations/__pycache__/
+*/migrations/*.pyc
+# */migrations/*.py  # можно включить, если не хочешь версионировать миграции вообще (не рекомендуется)
+
+# Coverage and test reports
+htmlcov/
+.coverage
+.tox/
+.nox/
+.pytest_cache/
+
+# MyPy and Pylint
+.mypy_cache/
+.pyre/
+.pytype/
+.pylint.d/
+
+# dotenv
+.env
+.env.*
+
+# Node (если используется)
+node_modules/

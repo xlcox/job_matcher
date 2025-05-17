@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Matcher</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    /* Переменные цветовой палитры */
+    :root {
+      --bg: #f7fafc;
+      --card-bg: #ffffff;
+      --primary: #3182ce;
+      --primary-hover: #2b6cb0;
+      --text: #2d3748;
+      --text-light: #4a5568;
+      --border: #e2e8f0;
+      --radius: 8px;
+      --spacing: 16px;
+      --font: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    /* Общие стили */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: var(--spacing);
+    }
+    h1, h2 {
+      color: var(--text);
+      margin-bottom: var(--spacing);
+    }
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      margin-top: var(--spacing);
+    }
+    h2 {
+      font-size: 1.25rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--spacing);
+      margin-bottom: var(--spacing);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    /* Формы и элементы управления */
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing);
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background: var(--primary-hover);
+    }
+    #btn-logout {
+      margin-top: var(--spacing);
+    }
+    /* Списки */
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: var(--spacing);
+    }
+    ul li {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    ul li:last-child {
+      border-bottom: none;
+    }
+    /* Адаптивность */
+    @media (min-width: 600px) {
+      form > * {
+        flex: 1 1 calc(50% - var(--spacing));
+      }
+      form textarea {
+        flex-basis: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Job Matcher</h1>
+
+  <section id="auth-section">
+    <h2>Вход</h2>
+    <form id="login-form">
+      <input id="login-email"    type="email"    placeholder="Email"    required>
+      <input id="login-password" type="password" placeholder="Пароль" required>
+      <button>Войти</button>
+    </form>
+    <button id="btn-logout" style="display:none">Выйти</button>
+  </section>
+
+  <section>
+    <h2>Резюме</h2>
+    <ul id="resume-list"></ul>
+    <form id="resume-form">
+      <input id="res-full_name"    placeholder="ФИО" required>
+      <input id="res-phone_number" placeholder="Телефон">
+      <input id="res-mail"         type="email" placeholder="Email">
+      <textarea id="res-text"      placeholder="Текст резюме" required></textarea>
+      <button>Добавить резюме</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Вакансии</h2>
+    <ul id="vacancy-list"></ul>
+    <form id="vacancy-form">
+      <input id="vac-name" placeholder="Название" required>
+      <textarea id="vac-desc" placeholder="Описание" required></textarea>
+      <button>Добавить вакансию</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Матчи</h2>
+    <form style="display:flex; gap: var(--spacing); align-items:flex-end; flex-wrap: wrap;">
+      <select id="match-select">
+        <option value="">-- выберите вакансию --</option>
+      </select>
+      <button id="btn-match" type="button">Показать матчи</button>
+    </form>
+    <ul id="match-results"></ul>
+  </section>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
