@@ -86,6 +86,49 @@ button:hover {
 .ruble {
   font-size: 1.2rem;
 }
+.match-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: normal;
+    margin-bottom: 6px;
+}
+
+.resume-id {
+    font-weight: bold; /* только id жирным */
+}
+
+.score {
+    font-style: italic;
+    color: #555;
+}
+
+.match-text {
+    font-size: 0.95em;
+    color: #333;
+    max-height: 4.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 6px;
+}
+
+.match-contact {
+    font-weight: normal;
+    color: #005a87;
+}
+
+.contact {
+    margin-left: 10px;
+    font-style: italic;
+    color: #777;
+}
+.match-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.match-item:last-child {
+    border-bottom: none; /* убрать линию у последнего элемента */
+}
 
 
 

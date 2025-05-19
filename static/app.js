@@ -14,7 +14,7 @@ async function fetchJSON(url, opts = {}) {
 
 async function loadResumes() {
     const ul = document.getElementById('resume-list');
-    if (!ul) return;
+    if (!ul || !TOKEN) return; // ✅ запрет просмотра без токена
     ul.innerHTML = '';
     const data = await fetchJSON(API + 'resumes/');
     data.slice(-5).forEach((r) => {
@@ -31,17 +31,25 @@ async function loadVacancies() {
     if (!ul || !sel) return;
     ul.innerHTML = '';
     sel.innerHTML = '<option value="">-- выберите вакансию --</option>';
+
     const data = await fetchJSON(API + 'vacancies/');
+
+    // Для списка вакансий показываем последние 5
     data.slice(-5).forEach((v) => {
         let li = document.createElement('li');
         li.textContent = `${v.id}: ${v.name}`;
         ul.appendChild(li);
+    });
+
+    // Для выпадающего списка показываем все вакансии
+    data.forEach((v) => {
         let opt = document.createElement('option');
         opt.value = v.id;
         opt.textContent = v.name;
         sel.appendChild(opt);
     });
 }
+
 
 
 // Обработка форм — резюме и вакансии (если есть на странице)
@@ -56,12 +64,13 @@ if (resumeForm) {
             text: e.target['res-text'].value,
             salary: e.target['res-salary'].value,
         };
-        await fetchJSON(API + 'resumes/', {
+        await fetch(API + 'resumes/', {
             method: 'POST',
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(body),
         });
         e.target.reset();
-        loadResumes();
+        if (TOKEN) loadResumes();
     };
 }
 
@@ -82,7 +91,6 @@ if (vacancyForm) {
     };
 }
 
-// Показать матчи (до 5 штук)
 const btnMatch = document.getElementById('btn-match');
 if (btnMatch) {
     btnMatch.onclick = async () => {
@@ -91,10 +99,26 @@ if (btnMatch) {
         const data = await fetchJSON(API + `match/${vid}/`);
         const ul = document.getElementById('match-results');
         ul.innerHTML = '';
-        data.slice(0, 5).forEach((m) => { // добавлено slice(0,5)
+
+        for (let m of data.slice(0, 5)) {
+            const resume = await fetchJSON(API + `resumes/${m.resume_id}/`);
+
+            let contacts = '';
+            if (resume.phone_number) contacts = `<span class="contact">Телефон: ${resume.phone_number}</span>`;
+            else if (resume.mail) contacts = `<span class="contact">Email: ${resume.mail}</span>`;
+
             let li = document.createElement('li');
-            li.textContent = `Resume ${m.resume_id}: ${m.score}% — ${m.text}`;
+            li.classList.add('match-item');
+            li.innerHTML = `
+                <div class="match-header">
+                    <span class="resume-id">Резюме ${m.resume_id}</span>
+                    <em class="score">${m.score.toFixed(2)}%</em>
+                </div>
+                <div class="match-text">${m.text}</div>
+                <div class="match-contact">— ${resume.full_name} ${contacts}</div>
+            `;
             ul.appendChild(li);
-        });
+        }
     };
 }
+

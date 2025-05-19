@@ -19,6 +19,10 @@
     <input id="res-full_name" placeholder="ФИО" required/><br/>
     <input id="res-phone_number" placeholder="Телефон"/><br/>
     <input id="res-mail" type="email" placeholder="Email"/><br/>
+    <div class="input-with-symbol">
+      <input id="res-salary" type="number" min="0" placeholder="Желаемая зарплата"/>
+      <span class="ruble">₽</span>
+    </div>
     <textarea id="res-text" placeholder="Текст резюме" required></textarea><br/>
     <button>Добавить резюме</button>
   </form>
@@ -29,6 +33,10 @@
   <ul id="vacancy-list"></ul>
   <form id="vacancy-form">
     <input id="vac-name" placeholder="Название" required/><br/>
+    <div class="input-with-symbol">
+      <input id="res-salary" type="number" min="0" placeholder="Предлагаемая зарплата"/>
+      <span class="ruble">₽</span>
+    </div>
     <textarea id="vac-desc" placeholder="Описание" required></textarea><br/>
     <button>Добавить вакансию</button>
   </form>
