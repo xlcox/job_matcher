@@ -1,6 +1,7 @@
-from sentence_transformers import SentenceTransformer, util
 from functools import lru_cache
 from pathlib import Path
+
+from sentence_transformers import SentenceTransformer, util
 
 
 @lru_cache()

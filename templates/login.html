@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="stylesheet" href="/static/style.css"/>
+  <title>Login - Job Matcher</title>
+</head>
+<body>
+<h1>Вход</h1>
+
+<form id="login-form">
+  <input id="login-email" type="email" placeholder="Email" required/><br/>
+  <input id="login-password" type="password" placeholder="Пароль" required/><br/>
+  <button>Войти</button>
+</form>
+
+<script src="/static/app.js"></script>
+<script>
+    document.getElementById('login-form').onsubmit = async e => {
+        e.preventDefault();
+        const email = e.target['login-email'].value;
+        const password = e.target['login-password'].value;
+        const resp = await fetchJSON('/api-token-auth/', {
+            method: 'POST',
+            body: JSON.stringify({username: email, password}),
+        });
+        if (resp.token) {
+            TOKEN = resp.token;
+            localStorage.setItem('token', TOKEN);
+            window.location.href = '/dashboard';
+        } else {
+            alert('Не удалось войти');
+        }
+    };
+</script>
+</body>
+</html>

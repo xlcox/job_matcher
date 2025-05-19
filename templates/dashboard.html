@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="stylesheet" href="/static/style.css"/>
+  <title>Dashboard - Job Matcher</title>
+</head>
+<body>
+<header style="display:flex; justify-content: flex-end; padding: 10px;">
+  <button id="btn-logout">Выйти</button>
+</header>
+
+<h1>Job Matcher — Панель управления</h1>
+
+<section>
+  <h2>Резюме</h2>
+  <ul id="resume-list"></ul>
+  <form id="resume-form">
+    <input id="res-full_name" placeholder="ФИО" required/><br/>
+    <input id="res-phone_number" placeholder="Телефон"/><br/>
+    <input id="res-mail" type="email" placeholder="Email"/><br/>
+    <textarea id="res-text" placeholder="Текст резюме" required></textarea><br/>
+    <button>Добавить резюме</button>
+  </form>
+</section>
+
+<section>
+  <h2>Вакансии</h2>
+  <ul id="vacancy-list"></ul>
+  <form id="vacancy-form">
+    <input id="vac-name" placeholder="Название" required/><br/>
+    <textarea id="vac-desc" placeholder="Описание" required></textarea><br/>
+    <button>Добавить вакансию</button>
+  </form>
+</section>
+
+<section>
+  <h2>Подходящие кандидаты</h2>
+  <select id="match-select">
+    <option value="">-- выберите вакансию --</option>
+  </select>
+  <button id="btn-match">Показать кандидатов</button>
+  <ul id="match-results"></ul>
+</section>
+
+<script src="/static/app.js"></script>
+<script>
+     window.addEventListener('DOMContentLoaded', () => {
+        if (!TOKEN) {
+            window.location.href = '/login';
+            return;
+        }
+        loadResumes();
+        loadVacancies();
+
+
+        const logoutBtn = document.getElementById('btn-logout');
+        if (logoutBtn) {
+            logoutBtn.onclick = () => {
+                TOKEN = null;
+                localStorage.removeItem('token');
+                window.location.href = '/'; 
+            };
+        }
+    });
+</script>
+</body>
+</html>
