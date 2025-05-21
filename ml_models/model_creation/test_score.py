@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+
 """Сравнение вакансии с кандидатами с помощью SentenceTransformer."""
 
 from sentence_transformers import SentenceTransformer, util
 
 # Инициализация модели
-model = SentenceTransformer('models/fine_tuned_model')
+model = SentenceTransformer(
+    'C:\\Users\\Admin\\Desktop\\job_matcher\\ml_models\\fine_tuned_model')
 
 # Описание вакансии
 job_posting: str = (
@@ -14,37 +17,70 @@ job_posting: str = (
     "REST/GraphQL, английский уровень не ниже C1, умение писать техническую документацию и работать с TDD/CI/CD."
 )
 
-# Список кандидатов
-candidates = [
-    # 10 лет
-    "Project Manager с опытом 10 лет. Управлял IT-проектами в сфере разработки веб-приложений. Использую Scrum, Jira, Confluence, пишу документацию, работаю с REST API. Руководил командами до 12 человек. Английский — C1.",
+# Группы кандидатов с id
+candidate_groups = {
+    "ГРУППА 1: Реалистичные описания «размытые»": {
+        "candidates": [
+            {"id": 1,
+             "text": "Работаю менеджером проектов в IT-сфере. Очень люблю работать с людьми, считаю, что коммуникация — это ключ к успеху. Использую Jira, но чаще решаю всё через личные договорённости. Последний проект — запуск приложения для микрофинансовой компании. Участвую в стендапах. Английский хороший, но предпочитаю русскоязычные команды."},
+            {"id": 2,
+             "text": "Я проактивный, инициативный и ответственный. Люблю Agile, потому что он гибкий. В команде всегда стараюсь быть лидером. У меня за плечами более 10 проектов, но я не люблю писать отчёты. Уровень английского нормальный. Программированием не занимаюсь, но разбираюсь в людях. Уверенный пользователь ПК."},
+            {"id": 3,
+             "text": "Project Manager с техническим образованием. До этого занимался разработкой игр, а ещё увлекаюсь психологией и плаванием. Писал статьи на Хабр, люблю читать документацию. Jira знаю, но считаю её переоценённой. Работал в одной команде с DevOps, но не вникал в детали. Английский — B2."},
+            {"id": 4,
+             "text": "В проектах давно. В основном работал с командой из 5 человек, делали портал для госуслуг. Я больше по организационке. Вроде как Product Manager был, но формально — Project. Всё было на русском. С английским не особо. Jira была, но в Excel было удобнее."},
+            {"id": 5,
+             "text": "Я Project Manager, но также иногда беру на себя функции аналитика. Могу и в QA при необходимости. Работаю в стартапе, где всё делаем сами. Пишу в Notion, делаю wireframe'ы. Вроде как API у нас есть, но я не лезу туда. С английским работаю, но редко. Иногда веду команду, иногда просто координирую."}
+        ],
+        "expected_scores": [3, 5, 1, 2, 4]
+        # Ранжирование по id, слева - самый подходящий кандидат.
+    },
+    "ГРУППА 2: Смешанные кандидаты (разная релевантность)": {
+        "candidates": [
+            {"id": 6,
+             "text": "Садовод с 10-летним опытом. Занимаюсь выращиванием цветов и овощей, управляю небольшим хозяйством. IT навыков нет, технической документацией не владею."},
+            # Не подходящий кандидат
+            {"id": 7,
+             "text": "DevOps-инженер с 5-летним опытом. Автоматизация CI/CD, работа с Jenkins, Kubernetes, Docker, опыт настройки инфраструктуры для веб-приложений."},
+            # Кандидат из другой IT сферы
+            {"id": 8,
+             "text": "Project Manager с 6-летним опытом, специализация на финансовых IT-проектах. Владею Jira, Confluence, опыт работы с REST API, English — C1, веду несколько Scrum-команд."},
+            # Подходящий кандидат
+            {"id": 9,
+             "text": "Project Manager с опытом в маркетинговых IT-проектах. Знаком с Agile, Kanban, активно использую Jira и Confluence, опыт работы с документацией. Английский — B2."},
+            # PM с другими навыками
+            {"id": 10,
+             "text": "Business Analyst с опытом 4 года. Проводил сбор требований, работал с документацией, участвовал в планировании проектов. Опыт работы с Jira, Confluence. Английский — B2."}
+            # Кандидат на выбор
+        ],
+        "expected_scores": [8, 9, 10, 7, 6]
+        # Ранжирование по id, слева - самый подходящий кандидат.
+    }
+}
 
-    # 7 лет
-    "Project Manager с 7-летним опытом. Работал с Agile-подходом, вел несколько проектных команд. Использую Jira, Confluence, REST API, пишу документацию. Английский — C1.",
+# Основной цикл по группам
+for group_name, group_data in candidate_groups.items():
+    print("\n" + "=" * 80)
+    print(group_name)
+    print("=" * 80)
 
-    # 5 лет
-    "Project Manager. Опыт работы — 5 лет. Руководил Scrum-командами, работал с Jira, Confluence, документацией, API-интеграциями. Английский — C1.",
+    candidates = group_data["candidates"]
+    expected_scores = group_data["expected_scores"]
+    similarities = []
 
-    # 3 года
-    "Project Manager с 3-летним опытом. Управлял командой из 5 человек, писал user stories, использую Jira, Confluence, API, веду проектную документацию. Английский — C1.",
+    for candidate in candidates:
+        emb_job, emb_candidate = model.encode([job_posting, candidate["text"]])
+        score = util.cos_sim(emb_job, emb_candidate).item()
+        similarity_percent = round(score * 100, 2)
+        similarities.append((candidate["id"], similarity_percent))
 
-    # 1 год
-    "Работаю Project Manager 1 год. Участвую в Scrum-ритуалах, использую Jira и Confluence, немного писал документацию, взаимодействовал с API. Английский — C1."
-]
+    # Сортировка по убыванию процента совпадения
+    similarities_sorted = sorted(similarities, key=lambda x: x[1],
+                                 reverse=True)
 
-expected_scores = [5, 4, 3, 2, 1]  # ожидание по убыванию стажа
-
-# Вычисление схожести между вакансией и каждым кандидатом
-similarities: list[float] = []
-
-for candidate in candidates:
-    emb_job, emb_candidate = model.encode([job_posting, candidate])
-    score = util.cos_sim(emb_job, emb_candidate).item()
-    similarity_percent = round(score * 100, 2)
-    similarities.append(similarity_percent)
-
-# Вывод результатов
-print("Ожидаемое ранжирование (ручное):", expected_scores)
-print("Результаты модели (совпадение в %):")
-for i, score in enumerate(similarities, start=1):
-    print(f"Кандидат {i}: {score}% совпадения")
+    # Вывод
+    print("Ожидаемое ранжирование по id (от наиболее подходящего):",
+          expected_scores)
+    print("Результаты модели (совпадение в %):")
+    for candidate_id, score in similarities_sorted:
+        print(f"Кандидат {candidate_id}: {score}% совпадения")
