@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Resume, Vacancy
+from .models import CustomUser, Resume, Vacancy, Match
 
 
 @admin.register(CustomUser)
@@ -12,7 +12,8 @@ class CustomUserAdmin(UserAdmin):
         ('Личные данные',
          {'fields': ('full_name', 'phone_number', 'date_of_birth')}),
         ('Права', {'fields': (
-        'is_active', 'is_admin', 'is_staff', 'groups', 'user_permissions')}),
+            'is_active', 'is_admin', 'is_staff', 'groups',
+            'user_permissions')}),
     )
     add_fieldsets = (
         (None, {
@@ -31,3 +32,8 @@ class ResumeAdmin(admin.ModelAdmin):
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
+
+
+@admin.register(Match)
+class MatchAdmin(admin.ModelAdmin):
+    list_display = ('id', 'vacancy', 'resume', 'score')

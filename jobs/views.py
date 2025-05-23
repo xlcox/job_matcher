@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Resume, Vacancy
+from .models import Resume, Vacancy, Match
 from .serializers import ResumeSerializer, VacancySerializer
 from .permissions import IsAdmin, IsAdminOrCreateOnly
 from .utils import match_vacancy
@@ -33,6 +33,11 @@ def match_resumes(request, vacancy_id):
         candidates = Resume.objects.all()
 
     matches = match_vacancy(f"{vac.name}. {vac.description}", candidates)
+
+    Match.objects.filter(vacancy=vac).delete()
+    for resume, score in matches[:5]:
+        Match.objects.create(vacancy=vac, resume=resume)
+
     return Response([
         {'resume_id': r.id, 'score': s, 'text': r.text[:200] + '…'}
         for r, s in matches

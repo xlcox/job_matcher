@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import CustomUser, Resume, Vacancy
+from .models import CustomUser, Resume, Vacancy, Match
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,3 +21,9 @@ class VacancySerializer(serializers.ModelSerializer):
     class Meta:
         model = Vacancy
         fields = ['id', 'name', 'description', 'salary']
+
+
+class MatchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Match
+        fields = '__all__'
