@@ -80,7 +80,7 @@ class Vacancy(models.Model):
 class Match(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE)
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE)
-    score = models.FloatField(help_text="Оценка соответствия (в процентах)")
+    score = models.FloatField(help_text="Оценка соответствия (в процентах)", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

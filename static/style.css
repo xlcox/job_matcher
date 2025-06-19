@@ -7,8 +7,11 @@ body {
 }
 
 header {
-    margin-bottom: 20px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
 }
+
 
 section {
     max-width: 600px;
